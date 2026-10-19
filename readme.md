@@ -83,14 +83,14 @@ Prostudujte vnitřní blokové uspořádání programovatelného automatu na ní
 1. **Vnitřní uspořádání a paměťové oblasti PLC:**
    - Podle výše uvedeného blokového schématu a technické dokumentace PLC Teco doplňte funkci jednotlivých paměťových bloků v procesorové jednotce:
      - **Flash paměť (uživatelský program):** 
-       - Je volatilní (energeticky závislá)? `[Ano / Ne]`
-       - Co přesně se do ní nahrává z prostředí Mosaic: `...`
+       - Je volatilní (energeticky závislá)? `[Ne]`
+       - Co přesně se do ní nahrává z prostředí Mosaic: `Zkompilovaný uživatelský program (binární kód aplikace napsaný v normě IEC 61131-3), konfigurační data a systémové soubory.`
      - **Datová paměť RAM:** 
-       - Je volatilní? `[Ano / Ne]`
-       - K čemu slouží během cyklu PLC: `...`
+       - Je volatilní? `[Ano]`
+       - K čemu slouží během cyklu PLC: `Uchovávání dočasných proměnných, stavů vnitřních paměťových bitů, mezivýsledků výpočtů a dat potřebných pro aktuální běh programu.`
      - **Remanentní paměť (Retain / zálohovaná RAM):** 
-       - Jakým způsobem je zálohována při výpadku napájení v modulech Tecomat Foxtrot (akumulátor / superkondenzátor / paměť FRAM): `...`
-       - Uveďte typický příklad proměnné, která musí být uložena v remanentní paměti: `...`
+       - Jakým způsobem je zálohována při výpadku napájení v modulech Tecomat Foxtrot (akumulátor / superkondenzátor / paměť FRAM): `Pomocí paměti FRAM (Ferroelectric RAM) nebo bateriově/superkondenzátorově zálohované RAM.`
+       - Uveďte typický příklad proměnné, která musí být uložena v remanentní paměti: `Počítadla kusů, provozní hodiny stroje, uživatelské setpointy (např. nastavená požadovaná teplota), stavové proměnné režimu (ruční/automat).`
 
 2. **Cyklický princip činnosti PLC a procesní obraz:**
 	
@@ -99,16 +99,16 @@ Prostudujte vnitřní blokové uspořádání programovatelného automatu na ní
 	Obr. převzatý z: TECO A.S. *PROGRAMOVATELNÉ AUTOMATY TECOMAT FOXTROT 2*. Kolín: Teco a.s., 2026. Dostupné také z: https://wiki.tecomat.cz/
 	
    - Popište 3 základní fáze jednoho pracovního cyklu PLC (**Scan Cycle**):
-     - *Fáze 1 (Čtení vstupů):* `...` *(načtení stavu svorek do Procesního obrazu vstupů – PII)*
-     - *Fáze 2 (Vykonání programu):* `...` *(výpočet logických a matematických operací)*
-     - *Fáze 3 (Zápis výstupů):* `...` *(přenesení Procesního obrazu výstupů – PIQ na fyzické svorky)*
+     - *Fáze 1 (Čtení vstupů):* `Načtení fyzických stavů ze vstupních svorek a jejich uložení do Procesního obrazu vstupů (PII).`
+     - *Fáze 2 (Vykonání programu):* `Výpočet uživatelského programu řádek po řádku na základě hodnot v PII a zápis výsledků do Procesního obrazu výstupů (PIQ).`
+     - *Fáze 3 (Zápis výstupů):* `Přenesení Procesního obrazu výstupů (PIQ) na fyzické výstupní svorky.`
    - Proč procesor PLC nečte fyzické svorky průběžně během výpočtu programu na každém řádku kódu, ale pracuje výhradně s procesním obrazem?
-     - *Vysvětlení:* `...`
+     - *Vysvětlení:* `Zajišťuje to absolutní konzistenci dat během celého výpočtu jednoho cyklu (kdyby se stav vstupu změnil uprostřed výpočtu, vedlo by to k nestabilitě a nekonzistentním logickým výsledkům). Čtení z paměti RAM (procesního obrazu) je navíc řádově rychlejší než fyzické čtení ze svorek a převodníků.`
 
 3. **Napájení, signály a elektrická odolnost:**
    - Jaké je jmenovité napájecí napětí centrálních jednotek a rozšiřujících modulů systému Tecomat Foxtrot?
      - Označte správné možnosti: 
-	     `[ ] DC`
+	     `[X] DC`
 	     `[ ] AC`
 	     `[ ] 5 V`
 		 `[ ] 12 V`
@@ -116,9 +116,9 @@ Prostudujte vnitřní blokové uspořádání programovatelného automatu na ní
 		 `[ ] 48 V` 
 		 `[ ] 230 V`
    - Jaký je princip fungování a hlavní výhoda **galvanického oddělení** vstupních obvodů (pomocí optočlenů) u průmyslového PLC?
-     - *Odpověď:* `...`
+     - *Odpověď:* `Principem je přenos signálu pomocí světelného paprsku uvnitř optočlenu bez přímého elektrického (vodivého) propojení. Hlavní výhodou je dokonalá ochrana citlivé elektroniky PLC před nebezpečným přepětím, rušením, zemními smyčkami a vysokými rozdíly potenciálů z průmyslového prostředí.`
    - Proč musí být paralelně k cívce stejnosměrného elektromagnetického ventilu nebo stykače spínaného polovodičovým tranzistorovým výstupem PLC zapojena ochranná zhášecí dioda (tzv. flyback dioda/freewheeling diode)?
-     - *Vysvětlení:* `...`
+     - *Vysvětlení:* `Při vypnutí indukční zátěže (cívka relé/stykače) vzniká vlivem samoindukce prudká napěťová špička s opačnou polaritou (tzv. induktivní ráz), která by mohla tranzistorový výstup trvale zničit. Dioda zajistí bezpečné zkratování a postupné „vybití“ této energie v obvodu cívky.`
 
 4. **Komunikační rozhraní a systémové sběrnice Teco:**
    - Doplňte do tabulky parametry sběrnic používaných u systému Tecomat Foxtrot (využijte [wiki.tecomat.cz](https://wiki.tecomat.cz/)):
@@ -126,8 +126,8 @@ Prostudujte vnitřní blokové uspořádání programovatelného automatu na ní
 | Název sběrnice                         | Typická fyzická vrstva / kabeláž                        | K čemu sběrnice slouží                                | Maximální dosah / zakončení (terminace)                      |
 | :------------------------------------- | :------------------------------------------------------ | :---------------------------------------------------- | :----------------------------------------------------------- |
 | **TCL2** *(Teco Communication Line 2)* | RS-485, stíněný kroucený pár (např. kabel SYKFY, PCEHY) | Připojení rychlých periferních modulů na DIN lištu    | Až stovek metrů; na obou koncích zakončovací odpor cca 120 Ω |
-| **CIB** *(Common Installation Bus)*    | `...`                                                   | `...`                                                 | `...`                                                        |
-| **Ethernet (ETH)**                     | 100Base-TX, konektor RJ45 (kabel UTP/STP Cat 5e/6)      | `...` *(programování Mosaic, Web server, Modbus TCP)* | Max. 100 m na segment                                        |
+| **CIB** *(Common Installation Bus)*    | `Dvoudrátová sběrnice (kroucený pár / instalační kabel), fantomové napájení prvků po sběrnici`| `Připojení inteligentních periferních modulů, čidel a akčních členů (zejména pro domovní automatizace)`| `Až stovky metrů dle topologie větví; max. 32 modulů na jednu větev`|
+| **Ethernet (ETH)**                     | 100Base-TX, konektor RJ45 (kabel UTP/STP Cat 5e/6)      | `rogramování (Mosaic), Web server, komunikace (Modbus TCP, SCADA)`| Max. 100 m na segment                                        |
 
 > :key: **Vysvětlení pojmů a odborné zdroje:**
 > - **Procesní obraz (Process Image):** Paměťová oblast v RAM kontroléru, která uchovává snímek stavu všech fyzických vstupů pořízený na počátku cyklu a připravený stav výstupů pro zápis na konci cyklu. Zajišťuje časovou konzistenci dat během zpracování algoritmu.
