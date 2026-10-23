@@ -254,36 +254,37 @@ Jste v roli servisního inženýra na lince řízené automatem **Tecomat Foxtro
 | Signalizační prvek na PLC | Stav (barva / svit)     | Provozní význam (co stav znamená pro servisního technika)   |
 | :------------------------ | :---------------------- | :---------------------------------------------------------- |
 | **RUN**                   | Zelená, trvale svítí    | Uživatelský program v PLC běží v normálním cyklickém režimu |
-| **HALT / STOP**           | Žlutá / oranžová, svítí | `...`                                                       |
-| **ERR / FAULT**           | Červená, bliká          | `...`                                                       |
-| **ERR / FAULT**           | Červená, trvale svítí   | `...`                                                       |
-| **ETH (Link/Act)**        | Zelená/žlutá, bliká     | `...`                                                       |
+| **HALT / STOP**           | Žlutá / oranžová, svítí | `PLC je v režimu zastavení (Halt/Stop), uživatelský program neběží (např. po ručním zásahu v programovacím prostředí nebo kvůli chybě při startu).`|
+| **ERR / FAULT**           | Červená, bliká          | `Indikace varování nebo softwarové/nefatální chyby (např. překročení doby cyklu, varovný stav komunikace na sub-sběrnici).`|
+| **ERR / FAULT**           | Červená, trvale svítí   | `Kritická hardwarová nebo fatální systémová chyba (selhání běhu PLC, zhroucení systému, nutný restart či servisní zásah).`|
+| **ETH (Link/Act)**        | Zelená/žlutá, bliká     | `Fyzické Ethernetové připojení je navázáno a právě probíhá aktivní přenos dat (komunikace s nadřízeným systémem / Mosaicem).`|
 
 2. **Troubleshooting v elektrickém zapojení pomocí digitálního multimetru:**
    - Upevněte na DIN lištu PLC a podle parametrů (viz technický list) vyberte vhodný zdroj napájení.
    - Zapojte napájení PLC (než zapojíte 230 V AC zapojení proměřte).
    - Popište přesný a bezpečný metodický postup (kam připojíte měřicí hroty, jaký rozsah a veličinu na multimetru nastavíte; alespoň některé varianty bezpečně nasimulovat na PLC a zdroji, nejspíš budete potřebovat navázat komunikaci s programovacím prostředím, založit program a HW konfiguraci, abyste mohli ovládat výstupy a číst vstupy):
      - **A. Detekce tvrdého zkratu mezi svorkami +24 V DC a 0 V (GND) před zapnutím jističe:**
-       - *Postup:* `...` *(pozor: zařízení musí být zcela bez napětí, měření impedance/kontinuity)*
+       - *Postup:* `Zařízení musí být zcela bez napětí (vypnutý hlavní přívod i jističe). Multimetr přepněte do režimu měření odporu (kontinuity / akustického testu prozvánění). Červený měřicí hrot připojte na svorku +24 V DC a černý hrot na svorku 0 V (GND). Pokud multimetr trvale pípá nebo ukazuje extrémně nízký odpor blížící se $0\,\Omega$, je na napájecí linii tvrdý zkrat, který je nutno před zapnutím odstranit.`
      - **B. Ověření spečených kontaktů výstupního relé DO při vypnutém napájení řízení:**
-       - *Postup:* `...`
+       - *Postup:* `Zařízení je bez napětí. Multimetr nastavte na měření odporu nebo kontinuity. Měřicí hroty připojte na společný pól výstupu (COM) a na konkrétní svorku daného reléového výstupu DO v klidovém stavu (kdy má být výstup softwarově rozepnutý). Pokud přístroskop hlásí nulový odpor (kontinuitu/pípá), kontakty relé jsou mechanicky spečené a výstup je trvale sepnutý.`
      - **C. Diagnostika napájecího zdroje a napájení PLC (ověření správného napětí 24 V DC):**
-	   - *Postup:* `...` *(zařízení pod napětím, měření stejnosměrného napětí – hroty na svorkách zdroje / PLC napájení +24 V a 0 V, vhodný rozsah DC napětí, kontrola ripple/stability)*
+	   - *Postup:* `Zařízení je pod napětím. Multimetr nastavte na měření stejnosměrného napětí (rozsah DC V, např. 20 V nebo 200 V). Červený hrot přiložte na svorku +24 V DC (napájení PLC) a černý hrot na svorku 0 V / GND. Naměřená hodnota musí odpovídat provoznímu napětí zdroje (obvykle kolem $24\,\text{V DC}$). Sledujte stabilitu hodnoty, zda napětí nekolísá nebo nepoklesává pod přípustnou toleranci (např. pod $20.4\,\text{V DC}$).`
 	- **D. Diagnostika vstupů a výstupů PLC (ověření napětí / kontinuity na DI/DO):**
-       - *Postup:* `...` *(podle typu – měření napětí na aktivovaném vstupu/výstupu nebo kontinuity/impedance při vypnutém napájení, hroty na příslušných svorkách I/O a referenční GND)*
+       - *Postup:* `Podle stavu zařízení:Při zapnutém napájení: Měří se stejnosměrné napětí (DC V) proti referenční GND. Na aktivním digitálním vstupu DI (při sepnutém senzoru) by se mělo objevit napětí logické 1 (např. $24\,\text{V DC}$). Na aktivním výstupu DO se ověřuje přítomnost spínacího napětí.
+         Při vypnutém napájení: Měří se kontinuita nebo impedanční poměry kabeláže vůči společnému vodiči.` *(podle typu – měření napětí na aktivovaném vstupu/výstupu nebo kontinuity/impedance při vypnutém napájení, hroty na příslušných svorkách I/O a referenční GND)*
     - **E. Měření napětí 230 V AC pomocí DC rozsahu (!!! Tento úkol provádějte pouze s vyučujícím !!!):**
-	   - *Postup:* `...` *(zařízení pod napětím, multimetr nastaven na rozsah **1000 V DC**, hroty bezpečně připojeny na fázový a nulový vodič / L–N. Multimetr měří střední hodnotu, proto ukáže přibližně **0 V**.)*
-	   - *Jaké riziko z toho vyplývá při následné práci na zařízení:* `...`
+	   - *Postup:* `Zařízení je pod napětím, multimetr je chybou nastaven na rozsah měření stejnosměrného napětí (DC V, např. rozsah $1000\,\text{V DC}$). Hroty jsou bezpečně připojeny na fázový a nulový vodič ($L - N$) sítě $230\,\text{V AC}$. Multimetr v režimu DC měří střední hodnotu střídavého průběhu, která je u souměrného sinu rovna nule, proto ukáže přibližně $0\,\text{V DC}$.` *(zařízení pod napětím, multimetr nastaven na rozsah **1000 V DC**, hroty bezpečně připojeny na fázový a nulový vodič / L–N. Multimetr měří střední hodnotu, proto ukáže přibližně **0 V**.)*
+	   - *Jaké riziko z toho vyplývá při následné práci na zařízení:* `Technik může kvůli chybnému zobrazení $0\,\text{V}$ nabýt mylného dojmu, že vodiče jsou bez napětí, sáhnout na živé části pod napětím $230\,\text{V AC}$ a utrpět těžký úraz elektrickým proudem (popálení, zásah elektrickým proudem s ohrožením života).`
 
 3. **Diagnostika v programovacím prostředí Teco Mosaic:**
    - K jakému diagnostickému účelu slouží níže uvedené nástroje prostředí Mosaic a jaká jsou jejich bezpečnostní rizika:
      - **Nástroj Watch / Sledování proměnných (Inspektor):**
-       - *Účel:* `...`
+       - *Účel:* `Slouží k živému sledování aktuálních hodnot proměnných, stavů fyzických vstupů, výstupů, vnitřních markerů a registrů v běžícím programu PLC v reálném čase. Pomáhá odhalit, kde v logice dochází k chybnému vyhodnocení stavu čerpadla.`
      - **Funkce Force (Vnucení hodnoty vstupu / výstupu):**
-       - *Co přesně funkce provede:* `...`
-       - :warning: **Provozní a bezpečnostní riziko funkce Force:** Proč je použití funkce Force během ostrého provozu s přítomností lidské obsluhy zakázáno? `...`
+       - *Co přesně funkce provede:* `Násilně přepíše a zafixuje hodnotu vybrané vstupní nebo výstupní proměnné v paměti PLC na požadovanou hodnotu (např. vynutí sepnutí relé čerpadla), bez ohledu na reálný stav hardwaru nebo výsledek vykonávaného uživatelského programu.`
+       - :warning: **Provozní a bezpečnostní riziko funkce Force:** Proč je použití funkce Force během ostrého provozu s přítomností lidské obsluhy zakázáno? `protože obchází všechna bezpečnostní blokování, koncové spínače, hlídání tlakových ztrát a havarijní stavy. Může dojít k nečekanému spuštění stroje, těžkému zranění obsluhy nebo zničení technologického zařízení.`
      - **Systémový diagnostický log (Chybový protokol PLC v Mosaicu):**
-       - *Jaké informace v něm technik vyčte:* `...` *(např. restart CPU, výpadek sběrnice TCL2, chyba dělení nulou)*
+       - *Jaké informace v něm technik vyčte:* `Detailní historii systémových událostí, záznamy o příčinách posledního restartu CPU (např. watchdog, výpadek napájení), chybová hlášení komunikace na sběrnicích (TCL2, Ethernet) a kritické programové výjimky (např. dělení nulou, přetečení indexu pole), které vedly k zastavení linky.` *(např. restart CPU, výpadek sběrnice TCL2, chyba dělení nulou)*
 
 > **Kritéria hodnocení úlohy 4 (bodování na známky):**
 > - :bangbang: **Odborná správnost interpretace stavů a hlášení PLC (30 %):** Bezchybné vysvětlení indikace LED (RUN, HALT, ERR) a práce s diagnostickým hlášením v prostředí Mosaic.
